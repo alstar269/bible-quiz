@@ -61,7 +61,7 @@ export function createQuiz(
     id: generateId(),
     title,
     code: generateQuizCode(),
-    status: 'waiting',
+    status: 'playing',
     settings,
     createdAt: new Date().toISOString(),
     currentQuestion: 0,

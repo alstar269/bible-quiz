@@ -59,7 +59,7 @@ function PlayContent() {
       return
     }
 
-    router.push(`/play/${quiz?.id}/lobby`)
+    router.push(`/play/${quiz?.id}/game`)
   }
 
   return (

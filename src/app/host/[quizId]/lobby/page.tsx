@@ -12,7 +12,7 @@ export default function HostLobbyPage() {
   const router = useRouter()
   const quizId = params.quizId as string
 
-  const { quiz, participants, loadQuiz, startGame } = useGameStore()
+  const { quiz, participants, loadQuiz } = useGameStore()
   const [copied, setCopied] = useState(false)
 
   useEffect(() => {
@@ -25,7 +25,7 @@ export default function HostLobbyPage() {
   useEffect(() => {
     const interval = setInterval(() => {
       void loadQuiz(quizId)
-    }, 2000)
+    }, 3000)
     return () => clearInterval(interval)
   }, [quizId, loadQuiz])
 
@@ -51,11 +51,6 @@ export default function HostLobbyPage() {
     }
   }
 
-  const handleStart = async () => {
-    await startGame()
-    router.push('/host/dashboard')
-  }
-
   return (
     <div className="flex flex-col items-center min-h-screen p-6 pt-20">
       <HomeButton />
@@ -65,9 +60,12 @@ export default function HostLobbyPage() {
         className="text-center mb-6"
       >
         <h1 className="text-3xl font-extrabold text-[#2D3436] mb-1">
-          🎮 대기실
+          ✅ 퀴즈 준비 완료!
         </h1>
         <p className="text-lg text-[#636E72]">{quiz.title}</p>
+        <p className="text-sm text-[#7ED321] mt-1">
+          학생들이 바로 참가하여 문제를 풀 수 있어요
+        </p>
       </motion.div>
 
       <div className="w-full max-w-md space-y-6">
@@ -113,7 +111,7 @@ export default function HostLobbyPage() {
           </p>
         </motion.div>
 
-        {/* 참가자 목록 */}
+        {/* 참가자 현황 */}
         <motion.div
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
@@ -121,14 +119,14 @@ export default function HostLobbyPage() {
           className="game-card"
         >
           <div className="flex items-center justify-between mb-4">
-            <p className="text-lg font-bold">참가자</p>
+            <p className="text-lg font-bold">참가자 현황</p>
             <span className="bg-[#4A90D9] text-white px-3 py-1 rounded-full text-sm font-bold">
               {participants.length}명
             </span>
           </div>
           {participants.length === 0 ? (
-            <p className="text-center text-[#B2BEC3] py-8">
-              참가자를 기다리는 중...
+            <p className="text-center text-[#B2BEC3] py-4">
+              아직 참가한 학생이 없어요
             </p>
           ) : (
             <div className="flex flex-wrap gap-2">
@@ -147,16 +145,15 @@ export default function HostLobbyPage() {
           )}
         </motion.div>
 
-        {/* 게임 시작 버튼 */}
+        {/* 결과 확인 버튼 */}
         <motion.button
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.8 }}
-          onClick={handleStart}
-          disabled={participants.length === 0}
-          className="btn-primary w-full text-xl disabled:opacity-40 disabled:cursor-not-allowed"
+          onClick={() => router.push(`/host/dashboard/${quizId}`)}
+          className="btn-primary w-full text-xl"
         >
-          🚀 게임 시작! ({participants.length}명 참가)
+          📊 결과 확인하기
         </motion.button>
       </div>
     </div>
