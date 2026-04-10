@@ -1,26 +1,181 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-primary: #4A90D9;
+  --color-secondary: #FFB347;
+  --color-accent: #FF6B9D;
+  --color-success: #7ED321;
+  --color-bg: #FFF8F0;
+  --color-card: #FFFFFF;
+  --color-text: #2D3436;
+  --color-text-light: #636E72;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: #FFF8F0;
+  color: #2D3436;
+  font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/* 초등학생 친화적 버튼 스타일 */
+.btn-primary {
+  background: linear-gradient(135deg, #4A90D9, #5BA3E6);
+  color: white;
+  padding: 16px 32px;
+  border-radius: 16px;
+  font-size: 18px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(74, 144, 217, 0.3);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(74, 144, 217, 0.4);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-secondary {
+  background: linear-gradient(135deg, #FFB347, #FFC470);
+  color: #2D3436;
+  padding: 16px 32px;
+  border-radius: 16px;
+  font-size: 18px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(255, 179, 71, 0.3);
+}
+
+.btn-secondary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(255, 179, 71, 0.4);
+}
+
+/* 단어 버블 */
+.word-bubble {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 20px;
+  margin: 6px;
+  background: white;
+  border: 3px solid #4A90D9;
+  border-radius: 24px;
+  font-size: 20px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+  min-height: 56px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.word-bubble:hover {
+  transform: scale(1.05);
+  border-color: #FFB347;
+  box-shadow: 0 4px 12px rgba(255, 179, 71, 0.3);
+}
+
+.word-bubble.selected {
+  background: #4A90D9;
+  color: white;
+  border-color: #4A90D9;
+  transform: scale(0.95);
+  opacity: 0.5;
+}
+
+.word-bubble.placed {
+  background: #E8F4FD;
+  border-color: #B0D4F1;
+  color: #4A90D9;
+}
+
+/* 답안 슬롯 */
+.answer-slot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 20px;
+  margin: 4px;
+  min-width: 60px;
+  min-height: 52px;
+  background: #F0F4F8;
+  border: 2px dashed #B0BEC5;
+  border-radius: 16px;
+  font-size: 20px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.answer-slot.filled {
+  background: #E8F4FD;
+  border: 2px solid #4A90D9;
+  color: #2D3436;
+  cursor: pointer;
+}
+
+.answer-slot.filled:hover {
+  background: #FFE8E8;
+  border-color: #FF6B9D;
+}
+
+/* 카드 */
+.game-card {
+  background: white;
+  border-radius: 24px;
+  padding: 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+}
+
+/* 축하 애니메이션 */
+@keyframes bounce-in {
+  0% { transform: scale(0); opacity: 0; }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes float-up {
+  0% { transform: translateY(0) scale(1); opacity: 1; }
+  100% { transform: translateY(-100px) scale(1.5); opacity: 0; }
+}
+
+.celebrate {
+  animation: bounce-in 0.5s ease-out;
+}
+
+.float-emoji {
+  animation: float-up 1.5s ease-out forwards;
+}
+
+/* 점수 팝업 */
+@keyframes score-pop {
+  0% { transform: scale(0) translateY(0); opacity: 0; }
+  50% { transform: scale(1.3) translateY(-20px); opacity: 1; }
+  100% { transform: scale(1) translateY(-40px); opacity: 0; }
+}
+
+.score-popup {
+  animation: score-pop 1.2s ease-out forwards;
+}
+
+/* 프로그레스 바 */
+.progress-bar {
+  height: 12px;
+  border-radius: 6px;
+  background: #E8E8E8;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 6px;
+  background: linear-gradient(90deg, #4A90D9, #7ED321);
+  transition: width 0.5s ease;
 }
