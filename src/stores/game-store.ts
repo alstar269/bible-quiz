@@ -76,6 +76,10 @@ interface GameStore {
   readonly loadQuiz: (quizId: string) => Promise<boolean>
   readonly loadQuizByCode: (code: string) => Promise<boolean>
 
+  // 대시보드
+  readonly allQuizzes: readonly Quiz[]
+  readonly loadAllQuizzes: () => Promise<void>
+
   // 리셋
   readonly reset: () => void
 }
@@ -87,6 +91,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
   answers: [],
   currentQuestionIndex: 0,
   myParticipantId: null,
+  allQuizzes: [],
 
   createNewQuiz: async (title, verses, settingsOverride) => {
     const settings: QuizSettings = { ...DEFAULT_SETTINGS, ...settingsOverride }
@@ -309,6 +314,30 @@ export const useGameStore = create<GameStore>((set, get) => ({
     const quizId = loadFromStorage<string>(`quiz-code-${code}`)
     if (!quizId) return false
     return get().loadQuiz(quizId)
+  },
+
+  loadAllQuizzes: async () => {
+    if (isSupabaseConfigured) {
+      const quizzes = await api.fetchAllQuizzes()
+      set({ allQuizzes: quizzes })
+    } else {
+      // localStorage에서 모든 퀴즈 로드
+      if (typeof window === 'undefined') return
+      const quizzes: Quiz[] = []
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i)
+        if (key?.startsWith('bible-quiz-quiz-') && !key.includes('code')) {
+          try {
+            const quiz = JSON.parse(localStorage.getItem(key) ?? '') as Quiz
+            if (quiz.id && quiz.title) {
+              quizzes.push(quiz)
+            }
+          } catch { /* skip */ }
+        }
+      }
+      quizzes.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+      set({ allQuizzes: quizzes })
+    }
   },
 
   reset: () => {

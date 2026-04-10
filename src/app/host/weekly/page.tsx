@@ -7,6 +7,7 @@ import { generateId } from '@/lib/quiz-engine'
 import { isSupabaseConfigured, insertWeeklyVerse, fetchWeeklyVerses } from '@/lib/supabase-api'
 import type { WeeklyVerse } from '@/types'
 import Link from 'next/link'
+import HomeButton from '@/components/common/HomeButton'
 
 // localStorage 폴백
 function saveWeeklyVerseLocal(verse: WeeklyVerse): void {
@@ -76,15 +77,13 @@ export default function WeeklyManagePage() {
     typeof window !== 'undefined' ? `${window.location.origin}/weekly` : ''
 
   return (
-    <div className="flex flex-col items-center min-h-screen p-6">
+    <div className="flex flex-col items-center min-h-screen p-6 pt-20">
+      <HomeButton />
       <motion.div
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         className="text-center mb-6"
       >
-        <Link href="/host" className="text-[#636E72] text-sm mb-4 inline-block">
-          ← 선생님 메뉴
-        </Link>
         <h1 className="text-3xl font-extrabold text-[#2D3436]">
           📅 주간 말씀 관리
         </h1>

@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { QRCodeSVG } from 'qrcode.react'
 import { useGameStore } from '@/stores/game-store'
+import HomeButton from '@/components/common/HomeButton'
 
 export default function HostLobbyPage() {
   const params = useParams()
@@ -52,11 +53,12 @@ export default function HostLobbyPage() {
 
   const handleStart = async () => {
     await startGame()
-    router.push(`/host/${quizId}/play`)
+    router.push('/host/dashboard')
   }
 
   return (
-    <div className="flex flex-col items-center min-h-screen p-6">
+    <div className="flex flex-col items-center min-h-screen p-6 pt-20">
+      <HomeButton />
       <motion.div
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}

@@ -4,6 +4,7 @@ import { useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { useGameStore } from '@/stores/game-store'
+import HomeButton from '@/components/common/HomeButton'
 
 export default function PlayerResultsPage() {
   const params = useParams()
@@ -35,7 +36,8 @@ export default function PlayerResultsPage() {
   const correctCount = myAnswers.filter((a) => a.isCorrect).length
 
   return (
-    <div className="flex flex-col items-center min-h-screen p-6">
+    <div className="flex flex-col items-center min-h-screen p-6 pt-20">
+      <HomeButton />
       {/* 내 결과 */}
       <motion.div
         initial={{ scale: 0 }}

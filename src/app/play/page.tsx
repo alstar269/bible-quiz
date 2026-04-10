@@ -4,6 +4,7 @@ import { Suspense, useState, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { useGameStore } from '@/stores/game-store'
+import HomeButton from '@/components/common/HomeButton'
 
 function PlayContent() {
   const router = useRouter()
@@ -62,18 +63,18 @@ function PlayContent() {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-6">
+    <div className="flex flex-col items-center justify-center min-h-screen p-6 pt-20">
+      <HomeButton />
       <motion.div
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         className="text-center mb-8"
       >
-        <button
-          onClick={() => (step === 'nickname' ? setStep('code') : router.push('/'))}
-          className="text-[#636E72] text-sm mb-4 inline-block"
-        >
-          ← 뒤로
-        </button>
+        {step === 'nickname' && (
+          <button onClick={() => setStep('code')} className="text-[#636E72] text-sm mb-4 inline-block">
+            ← 코드 입력으로
+          </button>
+        )}
         <div className="text-6xl mb-3">🙋</div>
         <h1 className="text-3xl font-extrabold text-[#2D3436]">퀴즈 참가</h1>
       </motion.div>

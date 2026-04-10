@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useGameStore } from '@/stores/game-store'
 import type { Difficulty, VerseInput } from '@/types'
+import HomeButton from '@/components/common/HomeButton'
 
 const DIFFICULTY_OPTIONS: { value: Difficulty; label: string; desc: string }[] = [
   { value: 'easy', label: '쉬움', desc: '짧은 구절 + 힌트 표시' },
@@ -74,18 +75,18 @@ export default function CreateQuizPage() {
   }
 
   return (
-    <div className="flex flex-col items-center min-h-screen p-6">
+    <div className="flex flex-col items-center min-h-screen p-6 pt-20">
+      <HomeButton />
       <motion.div
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         className="text-center mb-6 w-full max-w-lg"
       >
-        <button
-          onClick={() => (step === 'verses' ? setStep('settings') : router.back())}
-          className="text-[#636E72] text-sm mb-4 inline-block"
-        >
-          ← 뒤로
-        </button>
+        {step === 'verses' && (
+          <button onClick={() => setStep('settings')} className="text-[#636E72] text-sm mb-4 inline-block">
+            ← 설정으로
+          </button>
+        )}
         <h1 className="text-3xl font-extrabold text-[#2D3436]">
           ✏️ 퀴즈 만들기
         </h1>

@@ -249,6 +249,21 @@ export async function fetchWeeklyVerses(): Promise<WeeklyVerse[]> {
 }
 
 // ============================================
+// 전체 퀴즈 목록 (대시보드용)
+// ============================================
+
+export async function fetchAllQuizzes(): Promise<Quiz[]> {
+  if (!supabase) return []
+  const { data, error } = await supabase
+    .from('quizzes')
+    .select('*')
+    .order('created_at', { ascending: false })
+    .limit(50)
+  if (error || !data) return []
+  return data.map(toQuiz)
+}
+
+// ============================================
 // Realtime 구독 헬퍼
 // ============================================
 

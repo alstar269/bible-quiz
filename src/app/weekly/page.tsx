@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { isSupabaseConfigured, fetchWeeklyVerses } from '@/lib/supabase-api'
+import HomeButton from '@/components/common/HomeButton'
 import type { WeeklyVerse } from '@/types'
 
 function loadWeeklyVersesLocal(): WeeklyVerse[] {
@@ -35,15 +36,13 @@ export default function WeeklyPage() {
   const latestVerse = verses[0]
 
   return (
-    <div className="flex flex-col items-center min-h-screen p-6">
+    <div className="flex flex-col items-center min-h-screen p-6 pt-20">
+      <HomeButton />
       <motion.div
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         className="text-center mb-8"
       >
-        <Link href="/" className="text-[#636E72] text-sm mb-4 inline-block">
-          ← 홈으로
-        </Link>
         <div className="text-6xl mb-3">🕊️</div>
         <h1 className="text-3xl font-extrabold text-[#2D3436]">주간 말씀</h1>
       </motion.div>

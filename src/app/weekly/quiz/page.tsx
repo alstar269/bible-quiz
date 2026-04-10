@@ -7,6 +7,7 @@ import confetti from 'canvas-confetti'
 import { shuffleArray } from '@/lib/shuffle'
 import { splitVerseIntoWords, generateId } from '@/lib/quiz-engine'
 import { isSupabaseConfigured, fetchWeeklyVerses } from '@/lib/supabase-api'
+import HomeButton from '@/components/common/HomeButton'
 import type { WeeklyVerse } from '@/types'
 
 function loadWeeklyVersesLocal(): WeeklyVerse[] {
@@ -135,18 +136,13 @@ export default function WeeklyQuizPage() {
   }
 
   return (
-    <div className="flex flex-col items-center min-h-screen p-6">
+    <div className="flex flex-col items-center min-h-screen p-6 pt-20">
+      <HomeButton />
       <motion.div
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         className="text-center mb-6"
       >
-        <button
-          onClick={() => router.push('/weekly')}
-          className="text-[#636E72] text-sm mb-4 inline-block"
-        >
-          ← 뒤로
-        </button>
         <h1 className="text-2xl font-extrabold text-[#2D3436]">
           🎯 주간 말씀 퀴즈
         </h1>

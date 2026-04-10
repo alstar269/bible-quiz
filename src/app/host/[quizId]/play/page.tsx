@@ -4,6 +4,7 @@ import { useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { useGameStore } from '@/stores/game-store'
+import HomeButton from '@/components/common/HomeButton'
 
 export default function HostPlayPage() {
   const params = useParams()
@@ -49,7 +50,8 @@ export default function HostPlayPage() {
   }
 
   return (
-    <div className="flex flex-col items-center min-h-screen p-6">
+    <div className="flex flex-col items-center min-h-screen p-6 pt-20">
+      <HomeButton />
       {/* 상단: 문제 번호 + 프로그레스 */}
       <div className="w-full max-w-2xl mb-6">
         <div className="flex items-center justify-between mb-2">

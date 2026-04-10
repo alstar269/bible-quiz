@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import confetti from 'canvas-confetti'
 import { useGameStore } from '@/stores/game-store'
 import { splitVerseIntoWords } from '@/lib/quiz-engine'
+import HomeButton from '@/components/common/HomeButton'
 
 const ENCOURAGE_MESSAGES = [
   '잘했어! 🌟',
@@ -28,8 +29,10 @@ export default function GamePage() {
   const router = useRouter()
   const quizId = params.quizId as string
 
-  const { quiz, questions, currentQuestionIndex, submitAnswer, loadQuiz } =
-    useGameStore()
+  const { quiz, questions, submitAnswer, loadQuiz } = useGameStore()
+
+  // 학생 자율 진행: 로컬에서 문제 인덱스 관리
+  const [localQuestionIndex, setLocalQuestionIndex] = useState(0)
 
   const [selectedWords, setSelectedWords] = useState<string[]>([])
   const [usedIndices, setUsedIndices] = useState<Set<number>>(new Set())
@@ -50,7 +53,8 @@ export default function GamePage() {
     }
   }, [quiz, quizId, loadQuiz])
 
-  const currentQuestion = questions[currentQuestionIndex]
+  const currentQuestion = questions[localQuestionIndex]
+  const isLastQuestion = localQuestionIndex >= questions.length - 1
 
   // 타이머
   useEffect(() => {
@@ -63,7 +67,7 @@ export default function GamePage() {
     return () => {
       if (timerRef.current) clearInterval(timerRef.current)
     }
-  }, [currentQuestionIndex, questionDone])
+  }, [localQuestionIndex, questionDone])
 
   // 문제 전환 시 초기화
   useEffect(() => {
@@ -74,22 +78,7 @@ export default function GamePage() {
     setHintsUsed(0)
     setShowHint(false)
     setQuestionDone(false)
-  }, [currentQuestionIndex])
-
-  // 퀴즈 상태 폴링 (출제자가 다음 문제로 넘겼는지 확인)
-  useEffect(() => {
-    const interval = setInterval(() => {
-      void loadQuiz(quizId)
-    }, 2000)
-    return () => clearInterval(interval)
-  }, [quizId, loadQuiz])
-
-  // 게임 종료 시 결과 페이지로
-  useEffect(() => {
-    if (quiz?.status === 'finished') {
-      router.push(`/play/${quizId}/results`)
-    }
-  }, [quiz?.status, quizId, router])
+  }, [localQuestionIndex])
 
   const handleSelectWord = useCallback(
     (word: string, index: number) => {
@@ -108,7 +97,6 @@ export default function GamePage() {
       const removedWord = selectedWords[removeIndex]
       if (!removedWord || !currentQuestion) return
 
-      // 원래 인덱스 찾기
       const originalIndex = currentQuestion.words.findIndex(
         (w, i) => w === removedWord && usedIndices.has(i)
       )
@@ -143,7 +131,6 @@ export default function GamePage() {
         ENCOURAGE_MESSAGES[Math.floor(Math.random() * ENCOURAGE_MESSAGES.length)]
       setFeedback({ type: 'correct', message: msg, points: answer.pointsEarned })
 
-      // confetti 효과
       confetti({
         particleCount: 100,
         spread: 70,
@@ -163,6 +150,15 @@ export default function GamePage() {
     hintsUsed,
     submitAnswer,
   ])
+
+  // 학생 자율 진행: 다음 문제로 이동
+  const handleNextQuestion = () => {
+    if (isLastQuestion) {
+      router.push(`/play/${quizId}/results`)
+    } else {
+      setLocalQuestionIndex((prev) => prev + 1)
+    }
+  }
 
   const handleHint = () => {
     if (!currentQuestion || !quiz?.settings.enableHints) return
@@ -195,11 +191,13 @@ export default function GamePage() {
   const correctWords = splitVerseIntoWords(currentQuestion.verseText)
 
   return (
-    <div className="flex flex-col min-h-screen p-4">
+    <div className="flex flex-col min-h-screen p-4 pt-16">
+      <HomeButton />
+
       {/* 상단: 문제 번호 + 타이머 */}
       <div className="flex items-center justify-between mb-3">
         <span className="text-base font-bold text-[#636E72]">
-          {currentQuestionIndex + 1} / {questions.length}
+          {localQuestionIndex + 1} / {questions.length}
         </span>
         {timeRemaining !== null && (
           <motion.span
@@ -219,7 +217,7 @@ export default function GamePage() {
         <div
           className="progress-fill"
           style={{
-            width: `${((currentQuestionIndex + 1) / questions.length) * 100}%`,
+            width: `${((localQuestionIndex + 1) / questions.length) * 100}%`,
           }}
         />
       </div>
@@ -326,15 +324,20 @@ export default function GamePage() {
         </div>
       )}
 
-      {/* 제출 / 다음 문제 대기 */}
+      {/* 다음 문제 버튼 (학생 자율 진행) */}
       {questionDone && (
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="text-center text-[#B2BEC3] mt-4"
+        <motion.div
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          className="mt-auto pb-4"
         >
-          선생님이 다음 문제로 넘기면 자동으로 이동해요...
-        </motion.p>
+          <button
+            onClick={handleNextQuestion}
+            className={`w-full text-xl ${isLastQuestion ? 'btn-secondary' : 'btn-primary'}`}
+          >
+            {isLastQuestion ? '🎉 결과 보기!' : '➡️ 다음 문제'}
+          </button>
+        </motion.div>
       )}
     </div>
   )
